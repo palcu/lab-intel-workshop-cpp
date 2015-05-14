@@ -1,9 +1,6 @@
-#include <stdlib.h>
-#include <string.h>
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <sstream>
 
 using namespace std;
 
@@ -14,7 +11,7 @@ struct FullName {
 };
 
 istream& operator >> (istream& is, FullName& fullname) {
-    is >> fullname.surname >> fullname.firstName;
+    is >> fullname.firstName >> fullname.surname;
     return is;
 }
 
@@ -24,20 +21,25 @@ ostream& operator << (ostream& os, const FullName& fullname) {
 }
 
 
-int readNamesFromFile(const char* fileName, FullName*& names) {
+int readNamesFromFile(const string& fileName, FullName*& names) {
     ifstream fin(fileName);
-    int nameCount=0;
+    unsigned nameCount=0;
     FullName name;
     while ( fin >> name ) {
         nameCount++;
-        names = (FullName*)realloc(names, nameCount*sizeof(FullName));
+        FullName* newNames = new FullName[nameCount];
+        for (int i=0; i<nameCount - 1; i++) {
+            newNames[i] = names[i];
+        }
+        delete []names;
+        names = newNames;
         names[nameCount - 1] = name;
     }
     return nameCount;
 }
 
 
-void printNamesForsurname(int nameCount, const string searchedSurname, FullName* names) {
+void printNamesForsurname(int nameCount, const string& searchedSurname, FullName* names) {
     unsigned foundNamesCount = 0;
     for (unsigned int i = 0; i < nameCount; i++) {
         if (names[i].surname == searchedSurname) {
@@ -59,7 +61,7 @@ int main() {
     cin >> searchedSurname;
     printNamesForsurname(nameCount, searchedSurname, names);
     
-    free(names);
+    delete []names;
     return 0;
 }
 
