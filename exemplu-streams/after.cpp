@@ -22,12 +22,17 @@ ostream& operator << (ostream& os, const FullName& fullname) {
 }
 
 
-void readNamesFromFile(const string& fileName, vector<FullName>& names) {
+vector<FullName> readNamesFromFile(const string& fileName) {
     ifstream fin(fileName);
+
+    vector<FullName> names;
     FullName name;
+    
     while ( fin >> name ) {
         names.push_back(name);
     }
+    
+    return names;
 }
 
 
@@ -45,8 +50,7 @@ void printNamesForsurname(const string& searchedSurname, vector<FullName>& names
 }
 
 int main() {
-    vector<FullName> names;
-    readNamesFromFile("/Users/alex/input.txt", names);
+    vector<FullName> names = readNamesFromFile("/Users/alex/input.txt");
     
     cout << "Enter surname: ";
     string searchedSurname;
