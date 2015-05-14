@@ -8,12 +8,9 @@
 using namespace std;
 
 
-const unsigned MAX_NAME_LENGTH = 30;
-
-
 struct FullName {
-    char surname[MAX_NAME_LENGTH];
-    char firstName[MAX_NAME_LENGTH];
+    string surname;
+    string firstName;
 };
 
 istream& operator >> (istream& is, FullName& fullname) {
@@ -40,10 +37,10 @@ int readNamesFromFile(const char* fileName, FullName*& names) {
 }
 
 
-void printNamesForsurname(int nameCount, char searchedSurname[], FullName* names) {
+void printNamesForsurname(int nameCount, const string searchedSurname, FullName* names) {
     unsigned foundNamesCount = 0;
     for (unsigned int i = 0; i < nameCount; i++) {
-        if (strcmp(names[i].surname, searchedSurname) == 0) {
+        if (names[i].surname == searchedSurname) {
             foundNamesCount++;
             cout << names[i];
         }
@@ -58,7 +55,7 @@ int main() {
     int nameCount = readNamesFromFile("/Users/alex/input.txt", names);
     
     cout << "Enter surname: ";
-    char searchedSurname[MAX_NAME_LENGTH];
+    string searchedSurname;
     cin >> searchedSurname;
     printNamesForsurname(nameCount, searchedSurname, names);
     
