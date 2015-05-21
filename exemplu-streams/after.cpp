@@ -3,49 +3,66 @@
 #include <string>
 #include <vector>
 #include <list>
-#include <map>
-#include <utility>
+#include <functional>
+#include <algorithm>
 
 using namespace std;
 
 
-istream& operator >> (istream& is, pair<string, string>& fullname) {
-    is >> fullname.first >> fullname.second;
+struct FullName {
+    string surname;
+    string firstName;
+
+};
+
+istream& operator >> (istream& is, FullName& fullname) {
+    is >> fullname.firstName >> fullname.surname;
     return is;
 }
 
-ostream& operator << (ostream& os, pair<string, string>& fullname) {
-    os << fullname.first;
+ostream& operator << (ostream& os, const FullName& fullname) {
+    os << fullname.firstName;
     return os;
 }
 
-
-map<string, string> readNamesFromFile(const string& fileName) {
+list<FullName> readNamesFromFile(const string& fileName) {
     ifstream fin(fileName);
     
-    map<string, string> names;
-    pair<string, string> name;
+    list<FullName> names;
+    FullName name;
     
     while ( fin >> name ) {
-        names.insert(name);
+        names.push_back(name);
     }
     
     return names;
 }
 
+class Equal {
+private:
+    string s1;
+public:
+    Equal(string s2) : s1(s2){}
+    bool operator() (FullName fullname) {
+        return s1 == fullname.surname;
+    }
+};
 
 void printNamesForsurname(const string& searchedSurname,
-                          const map<string, string>& names) {
-    map<string, string>::const_iterator foundSurname = names.find(searchedSurname);
-    if (foundSurname != names.end()) {
-        cout << foundSurname->second;
-    } else {
+                          const list<FullName>& names) {
+    list<FullName>::const_iterator it = find_if(names.begin(),
+                                                names.end(),
+                                                Equal(searchedSurname));
+    
+    if (it == names.end()) {
         cout << "No first name found for surname " << searchedSurname << endl;
+    } else {
+        cout << *it;
     }
 }
 
 int main() {
-    map<string, string> names = readNamesFromFile("/Users/alex/input.txt");
+    list<FullName> names = readNamesFromFile("/Users/alex/input.txt");
     
     cout << "Enter surname: ";
     string searchedSurname;
