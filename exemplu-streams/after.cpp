@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <list>
 
 using namespace std;
 
@@ -22,10 +23,10 @@ ostream& operator << (ostream& os, const FullName& fullname) {
 }
 
 
-vector<FullName> readNamesFromFile(const string& fileName) {
+list<FullName> readNamesFromFile(const string& fileName) {
     ifstream fin(fileName);
-
-    vector<FullName> names;
+    
+    list<FullName> names;
     FullName name;
     
     while ( fin >> name ) {
@@ -36,12 +37,14 @@ vector<FullName> readNamesFromFile(const string& fileName) {
 }
 
 
-void printNamesForsurname(const string& searchedSurname, vector<FullName>& names) {
+void printNamesForsurname(const string& searchedSurname,
+                          const list<FullName>& names) {
     unsigned foundNamesCount = 0;
-    for (unsigned int i = 0; i < names.size(); i++) {
-        if (names[i].surname == searchedSurname) {
+    list<FullName>::const_iterator it;
+    for (it = names.begin(); it != names.end(); it++) {
+        if ((*it).surname == searchedSurname) {
             foundNamesCount++;
-            cout << names[i];
+            cout << *it;
         }
     }
     if (foundNamesCount == 0) {
@@ -50,7 +53,7 @@ void printNamesForsurname(const string& searchedSurname, vector<FullName>& names
 }
 
 int main() {
-    vector<FullName> names = readNamesFromFile("/Users/alex/input.txt");
+    list<FullName> names = readNamesFromFile("/Users/alex/input.txt");
     
     cout << "Enter surname: ";
     string searchedSurname;
@@ -58,4 +61,3 @@ int main() {
     printNamesForsurname(searchedSurname, names);
     return 0;
 }
-
